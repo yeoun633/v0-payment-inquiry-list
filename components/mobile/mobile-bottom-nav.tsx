@@ -2,14 +2,14 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Home, BarChart3, Bell, MoreHorizontal } from "lucide-react"
+import { Home, CreditCard, TrendingUp, Building2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const navItems = [
   { icon: Home, label: "홈", href: "/mobile" },
-  { icon: BarChart3, label: "분석", href: "/mobile/analysis" },
-  { icon: Bell, label: "알림", href: "/mobile/notifications" },
-  { icon: MoreHorizontal, label: "더보기", href: "/mobile/more" },
+  { icon: CreditCard, label: "승인내역", href: "/mobile/inquiry/approval" },
+  { icon: TrendingUp, label: "입금내역", href: "/mobile/inquiry/deposit" },
+  { icon: Building2, label: "가맹점", href: "/mobile/inquiry/merchant" },
 ]
 
 export function MobileBottomNav() {

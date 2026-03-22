@@ -53,7 +53,7 @@ export default function MerchantInquiryPage() {
   const handleInquiry = () => {
     setIsInquiring(true)
     setTimeout(() => {
-      router.push("/mobile/inquiry/merchant/result")
+      router.push("/mobile/inquiry/merchant/1")
     }, 1000)
   }
 
