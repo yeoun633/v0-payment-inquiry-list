@@ -1,0 +1,247 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+
+@custom-variant dark (&:is(.dark *));
+
+/* Octover Financial Design System - Korean B2B */
+:root {
+  /* Core Brand Colors - Corporate Blue */
+  --primary: oklch(0.55 0.2 250);
+  --primary-foreground: oklch(1 0 0);
+  --primary-light: oklch(0.92 0.04 250);
+  --primary-dark: oklch(0.42 0.18 250);
+  
+  /* Backgrounds */
+  --background: oklch(0.985 0.002 250);
+  --foreground: oklch(0.2 0.02 250);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.2 0.02 250);
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.2 0.02 250);
+  
+  /* Secondary & Muted */
+  --secondary: oklch(0.96 0.01 250);
+  --secondary-foreground: oklch(0.3 0.02 250);
+  --muted: oklch(0.96 0.005 250);
+  --muted-foreground: oklch(0.5 0.02 250);
+  --accent: oklch(0.94 0.02 250);
+  --accent-foreground: oklch(0.25 0.02 250);
+  
+  /* Status Colors */
+  --success: oklch(0.65 0.18 145);
+  --success-foreground: oklch(1 0 0);
+  --success-light: oklch(0.92 0.06 145);
+  --warning: oklch(0.75 0.15 75);
+  --warning-foreground: oklch(0.3 0.1 75);
+  --warning-light: oklch(0.95 0.05 75);
+  --destructive: oklch(0.6 0.22 25);
+  --destructive-foreground: oklch(1 0 0);
+  --destructive-light: oklch(0.95 0.05 25);
+  --info: oklch(0.6 0.15 240);
+  --info-foreground: oklch(1 0 0);
+  --info-light: oklch(0.94 0.04 240);
+  
+  /* Borders & Inputs */
+  --border: oklch(0.9 0.01 250);
+  --input: oklch(0.92 0.01 250);
+  --ring: oklch(0.55 0.2 250);
+  
+  /* Charts */
+  --chart-1: oklch(0.55 0.2 250);
+  --chart-2: oklch(0.65 0.18 145);
+  --chart-3: oklch(0.75 0.15 75);
+  --chart-4: oklch(0.6 0.22 25);
+  --chart-5: oklch(0.5 0.15 300);
+  
+  /* Layout */
+  --radius: 0.5rem;
+  
+  /* Sidebar - Blue theme */
+  --sidebar: oklch(0.35 0.12 250);
+  --sidebar-foreground: oklch(0.95 0.01 250);
+  --sidebar-primary: oklch(0.55 0.2 250);
+  --sidebar-primary-foreground: oklch(1 0 0);
+  --sidebar-accent: oklch(0.42 0.14 250);
+  --sidebar-accent-foreground: oklch(1 0 0);
+  --sidebar-border: oklch(0.4 0.1 250);
+  --sidebar-ring: oklch(0.55 0.2 250);
+  --sidebar-muted: oklch(0.7 0.05 250);
+}
+
+.dark {
+  --primary: oklch(0.65 0.18 250);
+  --primary-foreground: oklch(0.15 0.02 250);
+  --primary-light: oklch(0.25 0.08 250);
+  --primary-dark: oklch(0.75 0.15 250);
+  
+  --background: oklch(0.15 0.02 250);
+  --foreground: oklch(0.95 0.01 250);
+  --card: oklch(0.18 0.02 250);
+  --card-foreground: oklch(0.95 0.01 250);
+  --popover: oklch(0.18 0.02 250);
+  --popover-foreground: oklch(0.95 0.01 250);
+  
+  --secondary: oklch(0.25 0.03 250);
+  --secondary-foreground: oklch(0.9 0.01 250);
+  --muted: oklch(0.25 0.02 250);
+  --muted-foreground: oklch(0.65 0.02 250);
+  --accent: oklch(0.28 0.04 250);
+  --accent-foreground: oklch(0.95 0.01 250);
+  
+  --success: oklch(0.7 0.16 145);
+  --warning: oklch(0.8 0.14 75);
+  --destructive: oklch(0.65 0.2 25);
+  
+  --border: oklch(0.3 0.03 250);
+  --input: oklch(0.25 0.02 250);
+  --ring: oklch(0.65 0.18 250);
+  
+  --chart-1: oklch(0.65 0.18 250);
+  --chart-2: oklch(0.7 0.16 145);
+  --chart-3: oklch(0.8 0.14 75);
+  --chart-4: oklch(0.65 0.2 25);
+  --chart-5: oklch(0.6 0.14 300);
+  
+  --sidebar: oklch(0.12 0.02 250);
+  --sidebar-foreground: oklch(0.92 0.01 250);
+  --sidebar-primary: oklch(0.65 0.18 250);
+  --sidebar-primary-foreground: oklch(0.95 0.01 250);
+  --sidebar-accent: oklch(0.22 0.04 250);
+  --sidebar-accent-foreground: oklch(0.95 0.01 250);
+  --sidebar-border: oklch(0.28 0.03 250);
+  --sidebar-ring: oklch(0.65 0.18 250);
+  --sidebar-muted: oklch(0.5 0.03 250);
+}
+
+@theme inline {
+  --font-sans: 'Pretendard', 'Geist', 'Apple SD Gothic Neo', 'Malgun Gothic', sans-serif;
+  --font-mono: 'Geist Mono', 'Consolas', monospace;
+  
+  /* Core colors */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-primary-light: var(--primary-light);
+  --color-primary-dark: var(--primary-dark);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  
+  /* Status colors */
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-success-light: var(--success-light);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-warning-light: var(--warning-light);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-destructive-light: var(--destructive-light);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-info-light: var(--info-light);
+  
+  /* Border & input */
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  
+  /* Charts */
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  
+  /* Radius */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  
+  /* Sidebar */
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+  --color-sidebar-muted: var(--sidebar-muted);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-feature-settings: 'ss01' on, 'ss02' on, 'cv01' on;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  
+  /* Korean typography optimization */
+  h1, h2, h3, h4, h5, h6 {
+    word-break: keep-all;
+    overflow-wrap: break-word;
+  }
+}
+
+/* Financial Service Design System Utilities */
+@layer utilities {
+  /* Status badge colors */
+  .badge-success {
+    @apply bg-success-light text-success;
+  }
+  .badge-warning {
+    @apply bg-warning-light text-warning-foreground;
+  }
+  .badge-destructive {
+    @apply bg-destructive-light text-destructive;
+  }
+  .badge-info {
+    @apply bg-info-light text-info;
+  }
+  .badge-pending {
+    @apply bg-warning-light text-warning-foreground;
+  }
+  
+  /* Card variants */
+  .card-summary {
+    @apply bg-card border border-border rounded-lg p-4 shadow-sm;
+  }
+  .card-elevated {
+    @apply bg-card border border-border rounded-lg p-4 shadow-md;
+  }
+  
+  /* Table styles */
+  .table-header {
+    @apply bg-muted text-muted-foreground text-sm font-medium;
+  }
+  .table-row-hover {
+    @apply hover:bg-muted/50 transition-colors;
+  }
+  
+  /* Mobile specific */
+  .mobile-safe-area {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .mobile-header {
+    @apply sticky top-0 z-10 bg-card border-b border-border;
+    padding-top: env(safe-area-inset-top);
+  }
+  .mobile-bottom-nav {
+    @apply fixed bottom-0 left-0 right-0 bg-card border-t border-border;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
