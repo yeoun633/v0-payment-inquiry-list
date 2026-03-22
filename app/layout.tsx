@@ -7,8 +7,8 @@ const _geist = Geist({ subsets: ["latin"] });
 const _geistMono = Geist_Mono({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: '여신금융협회 API 서비스 | Octover Admin',
-  description: '가맹점 정보 조회 및 금융 데이터 관리 서비스',
+  title: '가맹점 정보 조회 서비스 | Octover',
+  description: '여신금융협회 API 연계를 통한 가맹점 정보 조회 및 카드 관련 조회 서비스',
   generator: 'v0.app',
   icons: {
     icon: [

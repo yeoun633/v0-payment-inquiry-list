@@ -1,84 +1,74 @@
 "use client"
 
 import Link from "next/link"
-import { Bell, ChevronDown, ChevronRight, CreditCard, Building2, Wallet, FileText, TrendingUp, TrendingDown } from "lucide-react"
+import { Bell, ChevronDown, ChevronRight, CreditCard, Building2, Wallet, TrendingUp, Clock, CheckCircle2 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 
-const quickMenus = [
-  { icon: CreditCard, label: "승인내역", href: "/mobile/inquiry/approval", color: "bg-primary" },
-  { icon: Wallet, label: "매입내역", href: "/mobile/inquiry/purchase", color: "bg-info" },
-  { icon: TrendingUp, label: "입금내역", href: "/mobile/inquiry/deposit", color: "bg-success" },
-  { icon: Building2, label: "가맹점 정보", href: "/mobile/inquiry/merchant", color: "bg-warning" },
+const inquiryMenus = [
+  { icon: CreditCard, label: "카드 승인내역 조회", href: "/mobile/inquiry/approval", color: "bg-primary" },
+  { icon: Wallet, label: "매입내역 조회", href: "/mobile/inquiry/purchase", color: "bg-info" },
+  { icon: TrendingUp, label: "입금내역 조회", href: "/mobile/inquiry/deposit", color: "bg-success" },
+  { icon: Building2, label: "가맹점 정보 조회", href: "/mobile/inquiry/merchant", color: "bg-warning" },
 ]
 
-const recentTransactions = [
-  { cardCompany: "신한카드", time: "10:32", amount: 45000, status: "승인" },
-  { cardCompany: "삼성카드", time: "09:15", amount: 128000, status: "승인" },
-  { cardCompany: "현대카드", time: "08:42", amount: 32500, status: "승인" },
-  { cardCompany: "KB국민카드", time: "어제", amount: 89000, status: "승인" },
+const recentInquiries = [
+  { type: "가맹점 정보 조회", date: "2025-03-22 14:30", status: "completed" },
+  { type: "카드 승인내역 조회", date: "2025-03-22 10:15", status: "completed" },
+  { type: "입금내역 조회", date: "2025-03-21 16:45", status: "completed" },
+  { type: "매입내역 조회", date: "2025-03-20 09:00", status: "pending" },
 ]
+
+const statusConfig = {
+  completed: { label: "완료", icon: CheckCircle2, color: "text-success" },
+  pending: { label: "조회중", icon: Clock, color: "text-warning-foreground" },
+}
 
 export default function MobileHomePage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
       <header className="bg-primary text-primary-foreground px-4 pt-12 pb-6">
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-2">
             <div className="h-10 w-10 rounded-full bg-primary-foreground/20 flex items-center justify-center">
               <Building2 className="h-5 w-5" />
             </div>
             <div>
-              <p className="text-sm text-primary-foreground/80">안녕하세요,</p>
-              <button className="flex items-center gap-1 font-semibold">
+              <p className="text-xs text-primary-foreground/70">여신금융협회 API</p>
+              <button className="flex items-center gap-1 font-semibold text-sm">
                 행복한식당 <ChevronDown className="h-4 w-4" />
               </button>
             </div>
           </div>
-          <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/10 relative">
-            <Bell className="h-6 w-6" />
-            <span className="absolute top-1 right-1 h-2.5 w-2.5 rounded-full bg-destructive border-2 border-primary" />
+          <Button variant="ghost" size="icon" className="text-primary-foreground hover:bg-primary-foreground/10">
+            <Bell className="h-5 w-5" />
           </Button>
         </div>
 
-        {/* Summary Card */}
+        {/* Summary Card - Simplified */}
         <Card className="bg-primary-foreground/10 border-primary-foreground/20 text-primary-foreground">
           <CardContent className="p-4">
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <p className="text-xs text-primary-foreground/70 mb-1">오늘 승인금액</p>
-                <p className="text-xl font-bold">1,245,000원</p>
-                <div className="flex items-center gap-1 mt-1">
-                  <TrendingUp className="h-3 w-3 text-success-light" />
-                  <span className="text-[10px] text-success-light">전일 대비 +12.5%</span>
-                </div>
-              </div>
-              <div>
-                <p className="text-xs text-primary-foreground/70 mb-1">오늘 입금예정</p>
-                <p className="text-xl font-bold">3,520,000원</p>
-                <div className="flex items-center gap-1 mt-1">
-                  <span className="text-[10px] text-primary-foreground/60">D+1 기준</span>
-                </div>
-              </div>
-            </div>
+            <p className="text-xs text-primary-foreground/70 mb-1">가맹점 번호</p>
+            <p className="text-base font-semibold">M2024001234567</p>
+            <p className="text-xs text-primary-foreground/60 mt-1">사업자번호: 123-45-67890</p>
           </CardContent>
         </Card>
       </header>
 
-      {/* Quick Menu Grid */}
+      {/* Inquiry Menu Grid */}
       <div className="px-4 py-6">
-        <h2 className="text-sm font-semibold text-muted-foreground mb-3">빠른 조회</h2>
-        <div className="grid grid-cols-4 gap-3">
-          {quickMenus.map((menu) => {
+        <h2 className="text-sm font-semibold text-muted-foreground mb-3">조회 서비스</h2>
+        <div className="grid grid-cols-2 gap-3">
+          {inquiryMenus.map((menu) => {
             const Icon = menu.icon
             return (
               <Link key={menu.href} href={menu.href}>
-                <div className="flex flex-col items-center gap-2 p-3 rounded-xl bg-card border border-border hover:bg-muted/50 transition-colors">
-                  <div className={`h-10 w-10 rounded-full ${menu.color} flex items-center justify-center`}>
+                <div className="flex items-center gap-3 p-4 rounded-xl bg-card border border-border hover:bg-muted/50 transition-colors">
+                  <div className={`h-10 w-10 rounded-lg ${menu.color} flex items-center justify-center shrink-0`}>
                     <Icon className="h-5 w-5 text-primary-foreground" />
                   </div>
-                  <span className="text-xs font-medium text-foreground">{menu.label}</span>
+                  <span className="text-sm font-medium text-foreground leading-tight">{menu.label}</span>
                 </div>
               </Link>
             )
@@ -86,54 +76,45 @@ export default function MobileHomePage() {
         </div>
       </div>
 
-      {/* Recent Transactions */}
+      {/* Recent Inquiry History */}
       <div className="px-4">
         <div className="flex items-center justify-between mb-3">
-          <h2 className="text-sm font-semibold text-muted-foreground">최근 승인내역</h2>
-          <Link href="/mobile/inquiry/approval" className="flex items-center text-xs text-primary">
+          <h2 className="text-sm font-semibold text-muted-foreground">최근 조회 내역</h2>
+          <Link href="/mobile/inquiry/history" className="flex items-center text-xs text-primary">
             전체보기 <ChevronRight className="h-4 w-4" />
           </Link>
         </div>
         <Card>
           <CardContent className="p-0 divide-y divide-border">
-            {recentTransactions.map((tx, index) => (
-              <div key={index} className="flex items-center justify-between p-4">
-                <div className="flex items-center gap-3">
-                  <div className="h-10 w-10 rounded-full bg-muted flex items-center justify-center">
-                    <CreditCard className="h-5 w-5 text-muted-foreground" />
-                  </div>
+            {recentInquiries.map((inquiry, index) => {
+              const status = statusConfig[inquiry.status as keyof typeof statusConfig]
+              const StatusIcon = status.icon
+              return (
+                <div key={index} className="flex items-center justify-between p-4">
                   <div>
-                    <p className="text-sm font-medium text-foreground">{tx.cardCompany}</p>
-                    <p className="text-xs text-muted-foreground">{tx.time}</p>
+                    <p className="text-sm font-medium text-foreground">{inquiry.type}</p>
+                    <p className="text-xs text-muted-foreground mt-0.5">{inquiry.date}</p>
+                  </div>
+                  <div className={`flex items-center gap-1 ${status.color}`}>
+                    <StatusIcon className="h-3.5 w-3.5" />
+                    <span className="text-xs font-medium">{status.label}</span>
                   </div>
                 </div>
-                <div className="text-right">
-                  <p className="text-sm font-semibold text-foreground">
-                    {tx.amount.toLocaleString()}원
-                  </p>
-                  <p className="text-xs text-success">{tx.status}</p>
-                </div>
-              </div>
-            ))}
+              )
+            })}
           </CardContent>
         </Card>
       </div>
 
-      {/* Monthly Summary Banner */}
+      {/* Service Notice */}
       <div className="px-4 py-6">
-        <Card className="bg-primary-light border-primary/20">
+        <Card className="bg-info-light border-info/20">
           <CardContent className="p-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <p className="text-sm font-medium text-primary">3월 매출 현황</p>
-                <p className="text-2xl font-bold text-primary mt-1">42,350,000원</p>
-              </div>
-              <Link href="/mobile/analysis">
-                <Button variant="outline" size="sm" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground">
-                  상세보기
-                </Button>
-              </Link>
-            </div>
+            <p className="text-xs font-medium text-info mb-1">서비스 안내</p>
+            <p className="text-xs text-info/80 leading-relaxed">
+              여신금융협회 API를 통해 가맹점 정보 및 카드 관련 내역을 조회할 수 있습니다. 
+              조회 결과는 실시간으로 제공됩니다.
+            </p>
           </CardContent>
         </Card>
       </div>

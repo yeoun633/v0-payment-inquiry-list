@@ -166,30 +166,30 @@ export default function MerchantInquiryPage() {
   const [typeFilter, setTypeFilter] = useState("all")
 
   const columns = [
-    { key: "memberName", label: "회원" },
+    { key: "memberName", label: "요청회원" },
     { key: "merchantName", label: "가맹점명" },
     { key: "businessNumber", label: "사업자등록번호" },
-    { key: "inquiryType", label: "조회유형" },
-    { key: "inquiryPeriod", label: "조회기간" },
-    { key: "requestDate", label: "요청일시" },
+    { key: "inquiryType", label: "조회 유형" },
+    { key: "inquiryPeriod", label: "조회 기간" },
+    { key: "requestDate", label: "요청 일시" },
     {
       key: "status",
-      label: "처리상태",
+      label: "처리 상태",
       align: "center" as const,
       render: (value: unknown) => <StatusBadge status={value as StatusType} />,
     },
-    { key: "totalCount", label: "전체건수", align: "center" as const },
-    { key: "successCount", label: "성공건수", align: "center" as const },
-    { key: "failCount", label: "실패건수", align: "center" as const },
-    { key: "pendingCount", label: "처리예정건", align: "center" as const },
+    { key: "totalCount", label: "전체", align: "center" as const },
+    { key: "successCount", label: "성공", align: "center" as const },
+    { key: "failCount", label: "실패", align: "center" as const },
+    { key: "pendingCount", label: "대기", align: "center" as const },
     {
       key: "id",
-      label: "상세결과",
+      label: "상세",
       align: "center" as const,
       render: (_: unknown, row: MerchantInquiry) => (
         <Link href={`/admin/scraping/merchant/${row.id}`}>
           <Button variant="outline" size="sm" className="h-7 px-3 text-xs">
-            조회
+            상세
           </Button>
         </Link>
       ),
@@ -201,19 +201,19 @@ export default function MerchantInquiryPage() {
       {/* Page Header */}
       <div className="flex items-start justify-between">
         <div>
-          <h1 className="text-2xl font-bold text-foreground">가맹점 정보 조회</h1>
+          <h1 className="text-2xl font-bold text-foreground">가맹점 정보 조회 관리</h1>
           <p className="text-sm text-muted-foreground mt-1">
-            여신금융협회 연계 가맹점 정보 조회 요청 및 결과 관리
+            여신금융협회 API 연계 가맹점 정보 조회 요청 목록 및 처리 현황
           </p>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" className="gap-2">
             <Download className="h-4 w-4" />
-            내보내기
+            목록 내보내기
           </Button>
           <Button className="gap-2 bg-primary hover:bg-primary-dark text-primary-foreground">
             <Plus className="h-4 w-4" />
-            신규 조회 추가
+            조회 요청 등록
           </Button>
         </div>
       </div>
@@ -310,8 +310,8 @@ export default function MerchantInquiryPage() {
 
       {/* Quick Actions */}
       <div className="flex items-center gap-2">
-        <Button variant="outline" size="sm">추가</Button>
-        <Button variant="outline" size="sm">예금주 조회</Button>
+        <Button variant="outline" size="sm">일괄 재조회</Button>
+        <Button variant="outline" size="sm">조회 이력 관리</Button>
       </div>
 
       {/* Data Table */}

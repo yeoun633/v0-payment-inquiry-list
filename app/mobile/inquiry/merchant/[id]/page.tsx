@@ -63,7 +63,7 @@ export default function MerchantDetailPage() {
               </div>
               <div>
                 <p className="text-sm font-medium text-success">조회 완료</p>
-                <p className="text-xs text-success/80">2025-03-22 14:30:45</p>
+                <p className="text-xs text-success/80">조회일시: 2025-03-22 14:30:45</p>
               </div>
             </div>
           </CardContent>
@@ -152,11 +152,11 @@ export default function MerchantDetailPage() {
         <div className="flex gap-3 pt-2">
           <Button variant="outline" className="flex-1 gap-2">
             <RefreshCw className="h-4 w-4" />
-            재조회
+            재조회 요청
           </Button>
           <Button className="flex-1 gap-2 bg-primary hover:bg-primary-dark text-primary-foreground">
             <Download className="h-4 w-4" />
-            저장
+            결과 저장
           </Button>
         </div>
       </div>

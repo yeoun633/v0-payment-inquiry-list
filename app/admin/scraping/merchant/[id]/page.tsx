@@ -73,13 +73,13 @@ export default function MerchantDetailPage() {
     <div className="space-y-6">
       {/* Breadcrumb */}
       <nav className="flex items-center gap-2 text-sm text-muted-foreground">
-        <Link href="/admin" className="hover:text-foreground">노코드 관리</Link>
+        <Link href="/admin" className="hover:text-foreground">조회 서비스 관리</Link>
         <span>/</span>
-        <Link href="/admin/scraping/merchant" className="hover:text-foreground">스크래핑 업무</Link>
+        <Link href="/admin/scraping/merchant" className="hover:text-foreground">정보 조회 업무</Link>
         <span>/</span>
         <Link href="/admin/scraping/merchant" className="hover:text-foreground">가맹점 정보 조회</Link>
         <span>/</span>
-        <span className="text-foreground font-medium">조회 상세 결과</span>
+        <span className="text-foreground font-medium">조회 결과 상세</span>
       </nav>
 
       {/* Page Header */}
@@ -91,20 +91,20 @@ export default function MerchantDetailPage() {
             </Button>
           </Link>
           <div>
-            <h1 className="text-2xl font-bold text-foreground">조회 상세 결과</h1>
+            <h1 className="text-2xl font-bold text-foreground">가맹점 정보 조회 결과 상세</h1>
             <p className="text-sm text-muted-foreground mt-1">
-              요청 ID: {params.id} | {request.requestDate}
+              요청번호: REQ-{params.id} | 요청일시: {request.requestDate}
             </p>
           </div>
         </div>
         <div className="flex gap-2">
           <Button variant="outline" className="gap-2">
             <RefreshCw className="h-4 w-4" />
-            재조회
+            재조회 요청
           </Button>
           <Button variant="outline" className="gap-2">
             <Download className="h-4 w-4" />
-            결과 다운로드
+            결과 내보내기
           </Button>
         </div>
       </div>
@@ -117,7 +117,7 @@ export default function MerchantDetailPage() {
             <CardHeader className="pb-3">
               <CardTitle className="text-base font-semibold flex items-center gap-2">
                 <FileText className="h-4 w-4 text-primary" />
-                요청 정보
+                조회 요청 정보
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-0">
@@ -271,17 +271,17 @@ export default function MerchantDetailPage() {
         <Link href="/admin/scraping/merchant">
           <Button variant="outline" className="gap-2">
             <ArrowLeft className="h-4 w-4" />
-            목록으로
+            목록으로 돌아가기
           </Button>
         </Link>
         <div className="flex gap-2">
           <Button variant="outline" className="gap-2">
             <RefreshCw className="h-4 w-4" />
-            재조회
+            재조회 요청
           </Button>
           <Button className="gap-2 bg-primary hover:bg-primary-dark text-primary-foreground">
             <Download className="h-4 w-4" />
-            결과 다운로드
+            결과 내보내기
           </Button>
         </div>
       </div>

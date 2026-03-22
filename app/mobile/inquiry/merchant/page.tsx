@@ -88,9 +88,9 @@ export default function MerchantInquiryPage() {
 
             {/* Info Notice */}
             <div className="p-3 bg-info-light rounded-lg">
-              <p className="text-xs text-info">
-                여신금융협회를 통해 해당 사업장의 가맹점 정보를 조회합니다. 
-                조회 결과는 즉시 확인 가능하며, 결과 내역에서 상세 정보를 확인할 수 있습니다.
+              <p className="text-xs text-info leading-relaxed">
+                여신금융협회 API를 통해 해당 사업장의 가맹점 등록 정보를 조회합니다. 
+                조회 결과는 실시간으로 제공되며, 조회 내역에서 상세 정보를 확인할 수 있습니다.
               </p>
             </div>
 
@@ -118,9 +118,9 @@ export default function MerchantInquiryPage() {
         {/* Recent Inquiries */}
         <div>
           <div className="flex items-center justify-between mb-3">
-            <h2 className="text-sm font-semibold text-muted-foreground">최근 조회 내역</h2>
+            <h2 className="text-sm font-semibold text-muted-foreground">조회 내역</h2>
             <Link href="/mobile/inquiry/merchant/history" className="flex items-center text-xs text-primary">
-              전체보기 <ChevronRight className="h-4 w-4" />
+              전체 내역 <ChevronRight className="h-4 w-4" />
             </Link>
           </div>
 

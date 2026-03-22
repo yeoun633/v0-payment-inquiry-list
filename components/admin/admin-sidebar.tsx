@@ -29,10 +29,10 @@ interface NavItem {
 
 const navigation: NavItem[] = [
   {
-    label: "정산",
+    label: "정산 관리",
     icon: <CreditCard className="h-4 w-4" />,
     children: [
-      { label: "청구내역", href: "/admin/billing" },
+      { label: "청구내역 관리", href: "/admin/billing" },
     ],
   },
   {
@@ -40,32 +40,32 @@ const navigation: NavItem[] = [
     icon: <Users className="h-4 w-4" />,
     children: [
       { label: "알림 연락처 관리", href: "/admin/contacts" },
-      { label: "사용 API 관리", href: "/admin/api-usage" },
+      { label: "API 사용 관리", href: "/admin/api-usage" },
     ],
   },
   {
-    label: "노코드 관리",
+    label: "조회 서비스 관리",
     icon: <Database className="h-4 w-4" />,
     children: [
       { label: "인증 정보 관리", href: "/admin/auth-info" },
       {
-        label: "스크래핑 업무",
+        label: "정보 조회 업무",
         children: [
-          { label: "예금주 조회", href: "/admin/scraping/depositor" },
-          { label: "사업장 휴폐업 조회", href: "/admin/scraping/business-status" },
-          { label: "부동산 등기부등본 조회", href: "/admin/scraping/property" },
+          { label: "카드 승인내역 조회", href: "/admin/scraping/approval" },
+          { label: "매입내역 조회", href: "/admin/scraping/purchase" },
+          { label: "입금내역 조회", href: "/admin/scraping/deposit" },
           { label: "가맹점 정보 조회", href: "/admin/scraping/merchant" },
         ],
       },
     ],
   },
   {
-    label: "데이터 비즈",
+    label: "데이터 관리",
     icon: <LayoutDashboard className="h-4 w-4" />,
     href: "/admin/data-biz",
   },
   {
-    label: "스케줄",
+    label: "스케줄 관리",
     icon: <Calendar className="h-4 w-4" />,
     href: "/admin/schedule",
   },
@@ -77,7 +77,7 @@ const navigation: NavItem[] = [
     ],
   },
   {
-    label: "유지운영",
+    label: "시스템 운영",
     icon: <Settings className="h-4 w-4" />,
     href: "/admin/maintenance",
   },
@@ -175,8 +175,9 @@ export function AdminSidebar() {
 
       {/* Footer */}
       <div className="p-3 border-t border-sidebar-border">
-        <div className="text-xs text-sidebar-muted text-center">
-          v1.4.3 | 여신금융협회 API
+        <div className="text-[10px] text-sidebar-muted text-center leading-relaxed">
+          <p>v1.0.0</p>
+          <p>여신금융협회 API 연계 서비스</p>
         </div>
       </div>
     </aside>
