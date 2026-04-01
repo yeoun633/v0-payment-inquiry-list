@@ -1,16 +1,17 @@
 "use client"
 
 import Link from "next/link"
-import { Bell, ChevronDown, ChevronRight, CreditCard, Building2, Wallet, FileText, TrendingUp, TrendingDown, UtensilsCrossed } from "lucide-react"
+import { Bell, ChevronDown, ChevronRight, CreditCard, Building2, Wallet, TrendingUp, UtensilsCrossed, Zap } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 
 const quickMenus = [
-  { icon: CreditCard, label: "승인내역", href: "/mobile/inquiry/approval", color: "bg-primary" },
+  { icon: CreditCard, label: "카드 승인내역", href: "/mobile/inquiry/approval", color: "bg-primary" },
   { icon: Wallet, label: "매입내역", href: "/mobile/inquiry/purchase", color: "bg-info" },
   { icon: TrendingUp, label: "입금내역", href: "/mobile/inquiry/deposit", color: "bg-success" },
-  { icon: UtensilsCrossed, label: "배달매출", href: "/mobile/delivery-sales", color: "bg-warning" },
   { icon: Building2, label: "가맹점 정보", href: "/mobile/inquiry/merchant", color: "bg-muted-foreground" },
+  { icon: UtensilsCrossed, label: "배달매출", href: "/mobile/delivery-sales", color: "bg-warning" },
+  { icon: Zap, label: "선정산", href: "/mobile/pre-settlement", color: "bg-primary-dark" },
 ]
 
 const recentTransactions = [
@@ -67,19 +68,19 @@ export default function MobileHomePage() {
         </Card>
       </header>
 
-      {/* Quick Menu Grid */}
+      {/* Quick Menu Grid - 2x3 */}
       <div className="px-4 py-6">
         <h2 className="text-sm font-semibold text-muted-foreground mb-3">빠른 조회</h2>
-        <div className="grid grid-cols-5 gap-2">
+        <div className="grid grid-cols-3 gap-3">
           {quickMenus.map((menu) => {
             const Icon = menu.icon
             return (
               <Link key={menu.href} href={menu.href}>
-                <div className="flex flex-col items-center gap-2 p-3 rounded-xl bg-card border border-border hover:bg-muted/50 transition-colors">
-                  <div className={`h-10 w-10 rounded-full ${menu.color} flex items-center justify-center`}>
+                <div className="flex flex-col items-center gap-2 p-4 rounded-xl bg-card border border-border hover:bg-muted/50 transition-colors">
+                  <div className={`h-11 w-11 rounded-full ${menu.color} flex items-center justify-center`}>
                     <Icon className="h-5 w-5 text-primary-foreground" />
                   </div>
-                  <span className="text-xs font-medium text-foreground">{menu.label}</span>
+                  <span className="text-xs font-medium text-foreground text-center">{menu.label}</span>
                 </div>
               </Link>
             )
@@ -129,7 +130,7 @@ export default function MobileHomePage() {
                 <p className="text-sm font-medium text-primary">3월 매출 현황</p>
                 <p className="text-2xl font-bold text-primary mt-1">42,350,000원</p>
               </div>
-              <Link href="/mobile/analysis">
+              <Link href="/mobile/inquiry/approval">
                 <Button variant="outline" size="sm" className="border-primary text-primary hover:bg-primary hover:text-primary-foreground">
                   상세보기
                 </Button>
