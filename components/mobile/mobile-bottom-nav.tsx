@@ -2,13 +2,13 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { Home, Search, UtensilsCrossed, Zap, MoreHorizontal } from "lucide-react"
+import { Home, Search, BarChart3, Zap, MoreHorizontal } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const navItems = [
   { icon: Home, label: "홈", href: "/mobile" },
   { icon: Search, label: "조회", href: "/mobile/inquiry/approval" },
-  { icon: UtensilsCrossed, label: "배달매출", href: "/mobile/delivery-sales" },
+  { icon: BarChart3, label: "통계", href: "/mobile/statistics" },
   { icon: Zap, label: "선정산", href: "/mobile/pre-settlement" },
   { icon: MoreHorizontal, label: "더보기", href: "/mobile/more" },
 ]
@@ -21,8 +21,8 @@ export function MobileBottomNav() {
       return pathname === "/mobile"
     }
     if (href === "/mobile/inquiry/approval") {
-      // "조회" tab is active for all inquiry routes
-      return pathname.startsWith("/mobile/inquiry")
+      // "조회" tab is active for all inquiry routes and delivery-sales
+      return pathname.startsWith("/mobile/inquiry") || pathname.startsWith("/mobile/delivery-sales")
     }
     return pathname.startsWith(href)
   }

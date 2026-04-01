@@ -21,7 +21,7 @@ const menuSections = [
     title: "계정",
     items: [
       { icon: User, label: "내 정보", href: "/mobile/more/profile" },
-      { icon: Building2, label: "가맹점 관리", href: "/mobile/inquiry/merchant" },
+      { icon: Building2, label: "가맹점 관리", href: "/mobile/more/merchant" },
       { icon: Bell, label: "알림 설정", href: "/mobile/more/notifications" },
     ],
   },
