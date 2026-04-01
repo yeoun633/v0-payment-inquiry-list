@@ -7,74 +7,114 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Calendar, ChevronRight, Search, UtensilsCrossed } from "lucide-react"
 
-const platforms = ["전체", "배민1", "배달의민족", "쿠팡이츠", "요기요", "땡겨요"]
+const platforms = ["전체", "배달의민족", "쿠팡이츠", "요기요", "땡겨요"]
 
+// Transaction-level sample data (individual orders)
 const sampleResults = [
   { 
     id: "1", 
-    date: "2025-03-22", 
-    platform: "배민1", 
-    orderCount: 45, 
-    cancelCount: 2, 
-    totalSales: 1850000, 
-    expectedSettlement: 1702000,
-    status: "정산완료"
+    platform: "배달의민족", 
+    orderNumber: "B20250322-001542",
+    orderDateTime: "2025-03-22 14:32:15",
+    orderAmount: 32500,
+    cancelAmount: 0,
+    expectedSettlement: 29900,
+    status: "정산완료",
   },
   { 
     id: "2", 
-    date: "2025-03-22", 
-    platform: "쿠팡이츠", 
-    orderCount: 32, 
-    cancelCount: 1, 
-    totalSales: 1280000, 
-    expectedSettlement: 1177600,
-    status: "정산예정"
+    platform: "배달의민족", 
+    orderNumber: "B20250322-001538",
+    orderDateTime: "2025-03-22 13:45:22",
+    orderAmount: 28000,
+    cancelAmount: 0,
+    expectedSettlement: 25760,
+    status: "정산완료",
   },
   { 
     id: "3", 
-    date: "2025-03-21", 
-    platform: "배달의민족", 
-    orderCount: 28, 
-    cancelCount: 0, 
-    totalSales: 980000, 
-    expectedSettlement: 901600,
-    status: "정산완료"
+    platform: "쿠팡이츠", 
+    orderNumber: "CE20250322-087421",
+    orderDateTime: "2025-03-22 12:18:44",
+    orderAmount: 45000,
+    cancelAmount: 0,
+    expectedSettlement: 41400,
+    status: "정산예정",
   },
   { 
     id: "4", 
-    date: "2025-03-21", 
-    platform: "요기요", 
-    orderCount: 18, 
-    cancelCount: 1, 
-    totalSales: 620000, 
-    expectedSettlement: 570400,
-    status: "정산완료"
+    platform: "배달의민족", 
+    orderNumber: "B20250322-001525",
+    orderDateTime: "2025-03-22 11:55:03",
+    orderAmount: 18500,
+    cancelAmount: 18500,
+    expectedSettlement: 0,
+    status: "취소",
   },
   { 
     id: "5", 
-    date: "2025-03-20", 
-    platform: "배민1", 
-    orderCount: 52, 
-    cancelCount: 3, 
-    totalSales: 2150000, 
-    expectedSettlement: 1978000,
-    status: "정산완료"
+    platform: "요기요", 
+    orderNumber: "YG20250322-445621",
+    orderDateTime: "2025-03-22 11:22:18",
+    orderAmount: 52000,
+    cancelAmount: 0,
+    expectedSettlement: 47840,
+    status: "정산완료",
   },
   { 
     id: "6", 
-    date: "2025-03-20", 
+    platform: "쿠팡이츠", 
+    orderNumber: "CE20250322-087398",
+    orderDateTime: "2025-03-22 10:48:33",
+    orderAmount: 38000,
+    cancelAmount: 0,
+    expectedSettlement: 34960,
+    status: "정산예정",
+  },
+  { 
+    id: "7", 
     platform: "땡겨요", 
-    orderCount: 12, 
-    cancelCount: 0, 
-    totalSales: 380000, 
-    expectedSettlement: 349600,
-    status: "정산예정"
+    orderNumber: "TG20250322-012847",
+    orderDateTime: "2025-03-22 10:15:55",
+    orderAmount: 22000,
+    cancelAmount: 0,
+    expectedSettlement: 20240,
+    status: "정산예정",
+  },
+  { 
+    id: "8", 
+    platform: "배달의민족", 
+    orderNumber: "B20250321-001498",
+    orderDateTime: "2025-03-21 19:42:11",
+    orderAmount: 67500,
+    cancelAmount: 0,
+    expectedSettlement: 62100,
+    status: "정산완료",
+  },
+  { 
+    id: "9", 
+    platform: "요기요", 
+    orderNumber: "YG20250321-445589",
+    orderDateTime: "2025-03-21 18:33:27",
+    orderAmount: 29000,
+    cancelAmount: 0,
+    expectedSettlement: 26680,
+    status: "정산완료",
+  },
+  { 
+    id: "10", 
+    platform: "쿠팡이츠", 
+    orderNumber: "CE20250321-087342",
+    orderDateTime: "2025-03-21 17:15:08",
+    orderAmount: 41500,
+    cancelAmount: 41500,
+    expectedSettlement: 0,
+    status: "취소",
   },
 ]
 
 function getPlatformColor(platform: string): string {
   switch (platform) {
-    case "배민1":
     case "배달의민족":
       return "bg-[#2AC1BC]"
     case "쿠팡이츠":
@@ -96,6 +136,8 @@ function getStatusStyle(status: string): string {
       return "bg-info-light text-info"
     case "정산보류":
       return "bg-warning-light text-warning-foreground"
+    case "취소":
+      return "bg-destructive-light text-destructive"
     default:
       return "bg-muted text-muted-foreground"
   }
@@ -110,8 +152,9 @@ export default function DeliverySalesPage() {
     ? sampleResults 
     : sampleResults.filter(r => r.platform === selectedPlatform)
 
-  const totalSalesSum = filteredResults.reduce((sum, r) => sum + r.totalSales, 0)
-  const totalOrderCount = filteredResults.reduce((sum, r) => sum + r.orderCount, 0)
+  const totalAmount = filteredResults
+    .filter(r => r.status !== "취소")
+    .reduce((sum, r) => sum + r.orderAmount, 0)
 
   return (
     <div className="min-h-screen bg-background">
@@ -125,7 +168,7 @@ export default function DeliverySalesPage() {
         {/* Info Banner */}
         <div className="bg-info-light border border-info/20 rounded-lg p-3">
           <p className="text-xs text-info">
-            배달 플랫폼별 매출 및 정산 내역을 조회합니다. 홈 화면의 종합/캘린더/그래프와는 별도의 배달 전용 조회 화면입니다.
+            배달 플랫폼별 주문 건별 매출 내역을 조회합니다. 홈 화면의 종합/캘린더/그래프와는 별도의 배달 전용 조회 화면입니다.
           </p>
         </div>
 
@@ -176,27 +219,16 @@ export default function DeliverySalesPage() {
         {showResults && (
           <div className="space-y-3">
             {/* Summary */}
-            <Card className="bg-primary-light border-primary/20">
-              <CardContent className="p-4">
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <p className="text-xs text-primary/70 mb-1">총 배달매출</p>
-                    <p className="text-lg font-bold text-primary">{totalSalesSum.toLocaleString()}원</p>
-                  </div>
-                  <div>
-                    <p className="text-xs text-primary/70 mb-1">총 주문건수</p>
-                    <p className="text-lg font-bold text-primary">{totalOrderCount}건</p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-
             <div className="flex items-center justify-between">
               <p className="text-sm text-muted-foreground">
                 총 <span className="font-medium text-foreground">{filteredResults.length}</span>건
               </p>
+              <p className="text-sm font-medium text-primary">
+                합계 {totalAmount.toLocaleString()}원
+              </p>
             </div>
 
+            {/* Transaction List */}
             {filteredResults.map((result) => (
               <Card 
                 key={result.id} 
@@ -211,13 +243,13 @@ export default function DeliverySalesPage() {
                       </div>
                       <div>
                         <p className="text-sm font-medium text-foreground">{result.platform}</p>
-                        <p className="text-xs text-muted-foreground">{result.date}</p>
+                        <p className="text-xs text-muted-foreground">{result.orderNumber}</p>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
                       <div className="text-right">
-                        <p className="text-sm font-semibold text-foreground">
-                          {result.totalSales.toLocaleString()}원
+                        <p className={`text-sm font-semibold ${result.status === "취소" ? "text-destructive line-through" : "text-foreground"}`}>
+                          {result.orderAmount.toLocaleString()}원
                         </p>
                         <span className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-medium ${getStatusStyle(result.status)}`}>
                           {result.status}
@@ -226,19 +258,14 @@ export default function DeliverySalesPage() {
                       <ChevronRight className="h-4 w-4 text-muted-foreground" />
                     </div>
                   </div>
-                  <div className="mt-3 pt-3 border-t border-border grid grid-cols-3 gap-2 text-xs">
-                    <div>
-                      <span className="text-muted-foreground">주문</span>
-                      <span className="ml-1 font-medium text-foreground">{result.orderCount}건</span>
-                    </div>
-                    <div>
-                      <span className="text-muted-foreground">취소</span>
-                      <span className="ml-1 font-medium text-destructive">{result.cancelCount}건</span>
-                    </div>
-                    <div className="text-right">
-                      <span className="text-muted-foreground">정산예정</span>
-                      <span className="ml-1 font-medium text-foreground">{result.expectedSettlement.toLocaleString()}원</span>
-                    </div>
+                  <div className="mt-3 pt-3 border-t border-border flex items-center justify-between text-xs text-muted-foreground">
+                    <span>{result.orderDateTime}</span>
+                    {result.status !== "취소" && (
+                      <span>정산예정 <span className="font-medium text-foreground">{result.expectedSettlement.toLocaleString()}원</span></span>
+                    )}
+                    {result.status === "취소" && (
+                      <span className="text-destructive">취소금액 {result.cancelAmount.toLocaleString()}원</span>
+                    )}
                   </div>
                 </CardContent>
               </Card>

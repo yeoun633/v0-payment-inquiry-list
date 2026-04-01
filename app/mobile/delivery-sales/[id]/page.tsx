@@ -4,16 +4,16 @@ import { useRouter, useParams } from "next/navigation"
 import { MobileHeader } from "@/components/mobile/mobile-header"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { RefreshCw, Download, UtensilsCrossed, CheckCircle, Clock, AlertCircle } from "lucide-react"
+import { RefreshCw, Download, UtensilsCrossed, CheckCircle, Clock, AlertCircle, XCircle } from "lucide-react"
 
-// Sample data - in real app this would come from API
+// Transaction-level sample data (individual orders)
 const sampleData: Record<string, {
   id: string
-  date: string
   platform: string
-  orderCount: number
-  cancelCount: number
-  totalSales: number
+  orderNumber: string
+  orderDateTime: string
+  orderAmount: number
+  cancelAmount: number
   expectedSettlement: number
   status: string
   merchantName: string
@@ -22,115 +22,193 @@ const sampleData: Record<string, {
   platformFee: number
   deliveryFee: number
   promotionDiscount: number
-  netSales: number
+  menuItems: string
+  customerNote: string
 }> = {
   "1": {
     id: "1",
-    date: "2025-03-22",
-    platform: "배민1",
-    orderCount: 45,
-    cancelCount: 2,
-    totalSales: 1850000,
-    expectedSettlement: 1702000,
+    platform: "배달의민족",
+    orderNumber: "B20250322-001542",
+    orderDateTime: "2025-03-22 14:32:15",
+    orderAmount: 32500,
+    cancelAmount: 0,
+    expectedSettlement: 29900,
     status: "정산완료",
     merchantName: "행복한식당",
     businessNumber: "123-45-67890",
     settlementDate: "2025-03-25",
-    platformFee: 111000,
+    platformFee: 1950,
     deliveryFee: 0,
-    promotionDiscount: 37000,
-    netSales: 1702000,
+    promotionDiscount: 650,
+    menuItems: "김치찌개 1, 공기밥 2",
+    customerNote: "젓가락 많이 주세요",
   },
   "2": {
     id: "2",
-    date: "2025-03-22",
+    platform: "배달의민족",
+    orderNumber: "B20250322-001538",
+    orderDateTime: "2025-03-22 13:45:22",
+    orderAmount: 28000,
+    cancelAmount: 0,
+    expectedSettlement: 25760,
+    status: "정산완료",
+    merchantName: "행복한식당",
+    businessNumber: "123-45-67890",
+    settlementDate: "2025-03-25",
+    platformFee: 1680,
+    deliveryFee: 0,
+    promotionDiscount: 560,
+    menuItems: "된장찌개 1, 제육볶음 1",
+    customerNote: "",
+  },
+  "3": {
+    id: "3",
     platform: "쿠팡이츠",
-    orderCount: 32,
-    cancelCount: 1,
-    totalSales: 1280000,
-    expectedSettlement: 1177600,
+    orderNumber: "CE20250322-087421",
+    orderDateTime: "2025-03-22 12:18:44",
+    orderAmount: 45000,
+    cancelAmount: 0,
+    expectedSettlement: 41400,
     status: "정산예정",
     merchantName: "행복한식당",
     businessNumber: "123-45-67890",
     settlementDate: "2025-03-26",
-    platformFee: 76800,
+    platformFee: 2700,
     deliveryFee: 0,
-    promotionDiscount: 25600,
-    netSales: 1177600,
-  },
-  "3": {
-    id: "3",
-    date: "2025-03-21",
-    platform: "배달의민족",
-    orderCount: 28,
-    cancelCount: 0,
-    totalSales: 980000,
-    expectedSettlement: 901600,
-    status: "정산완료",
-    merchantName: "행복한식당",
-    businessNumber: "123-45-67890",
-    settlementDate: "2025-03-24",
-    platformFee: 58800,
-    deliveryFee: 0,
-    promotionDiscount: 19600,
-    netSales: 901600,
+    promotionDiscount: 900,
+    menuItems: "삼겹살 2인분, 냉면 1",
+    customerNote: "문 앞에 놓아주세요",
   },
   "4": {
     id: "4",
-    date: "2025-03-21",
+    platform: "배달의민족",
+    orderNumber: "B20250322-001525",
+    orderDateTime: "2025-03-22 11:55:03",
+    orderAmount: 18500,
+    cancelAmount: 18500,
+    expectedSettlement: 0,
+    status: "취소",
+    merchantName: "행복한식당",
+    businessNumber: "123-45-67890",
+    settlementDate: "-",
+    platformFee: 0,
+    deliveryFee: 0,
+    promotionDiscount: 0,
+    menuItems: "비빔밥 1",
+    customerNote: "고객 요청 취소",
+  },
+  "5": {
+    id: "5",
     platform: "요기요",
-    orderCount: 18,
-    cancelCount: 1,
-    totalSales: 620000,
-    expectedSettlement: 570400,
+    orderNumber: "YG20250322-445621",
+    orderDateTime: "2025-03-22 11:22:18",
+    orderAmount: 52000,
+    cancelAmount: 0,
+    expectedSettlement: 47840,
+    status: "정산완료",
+    merchantName: "행복한식당",
+    businessNumber: "123-45-67890",
+    settlementDate: "2025-03-25",
+    platformFee: 3120,
+    deliveryFee: 0,
+    promotionDiscount: 1040,
+    menuItems: "불고기정식 2, 음료 2",
+    customerNote: "",
+  },
+  "6": {
+    id: "6",
+    platform: "쿠팡이츠",
+    orderNumber: "CE20250322-087398",
+    orderDateTime: "2025-03-22 10:48:33",
+    orderAmount: 38000,
+    cancelAmount: 0,
+    expectedSettlement: 34960,
+    status: "정산예정",
+    merchantName: "행복한식당",
+    businessNumber: "123-45-67890",
+    settlementDate: "2025-03-26",
+    platformFee: 2280,
+    deliveryFee: 0,
+    promotionDiscount: 760,
+    menuItems: "순두부찌개 2, 공기밥 2",
+    customerNote: "덜 맵게 해주세요",
+  },
+  "7": {
+    id: "7",
+    platform: "땡겨요",
+    orderNumber: "TG20250322-012847",
+    orderDateTime: "2025-03-22 10:15:55",
+    orderAmount: 22000,
+    cancelAmount: 0,
+    expectedSettlement: 20240,
+    status: "정산예정",
+    merchantName: "행복한식당",
+    businessNumber: "123-45-67890",
+    settlementDate: "2025-03-27",
+    platformFee: 1320,
+    deliveryFee: 0,
+    promotionDiscount: 440,
+    menuItems: "돈까스 1, 우동 1",
+    customerNote: "",
+  },
+  "8": {
+    id: "8",
+    platform: "배달의민족",
+    orderNumber: "B20250321-001498",
+    orderDateTime: "2025-03-21 19:42:11",
+    orderAmount: 67500,
+    cancelAmount: 0,
+    expectedSettlement: 62100,
     status: "정산완료",
     merchantName: "행복한식당",
     businessNumber: "123-45-67890",
     settlementDate: "2025-03-24",
-    platformFee: 37200,
+    platformFee: 4050,
     deliveryFee: 0,
-    promotionDiscount: 12400,
-    netSales: 570400,
+    promotionDiscount: 1350,
+    menuItems: "갈비탕 3, 공기밥 3",
+    customerNote: "파 많이 넣어주세요",
   },
-  "5": {
-    id: "5",
-    date: "2025-03-20",
-    platform: "배민1",
-    orderCount: 52,
-    cancelCount: 3,
-    totalSales: 2150000,
-    expectedSettlement: 1978000,
+  "9": {
+    id: "9",
+    platform: "요기요",
+    orderNumber: "YG20250321-445589",
+    orderDateTime: "2025-03-21 18:33:27",
+    orderAmount: 29000,
+    cancelAmount: 0,
+    expectedSettlement: 26680,
     status: "정산완료",
     merchantName: "행복한식당",
     businessNumber: "123-45-67890",
-    settlementDate: "2025-03-23",
-    platformFee: 129000,
+    settlementDate: "2025-03-24",
+    platformFee: 1740,
     deliveryFee: 0,
-    promotionDiscount: 43000,
-    netSales: 1978000,
+    promotionDiscount: 580,
+    menuItems: "짜장면 2, 탕수육 소",
+    customerNote: "",
   },
-  "6": {
-    id: "6",
-    date: "2025-03-20",
-    platform: "땡겨요",
-    orderCount: 12,
-    cancelCount: 0,
-    totalSales: 380000,
-    expectedSettlement: 349600,
-    status: "정산예정",
+  "10": {
+    id: "10",
+    platform: "쿠팡이츠",
+    orderNumber: "CE20250321-087342",
+    orderDateTime: "2025-03-21 17:15:08",
+    orderAmount: 41500,
+    cancelAmount: 41500,
+    expectedSettlement: 0,
+    status: "취소",
     merchantName: "행복한식당",
     businessNumber: "123-45-67890",
-    settlementDate: "2025-03-25",
-    platformFee: 22800,
+    settlementDate: "-",
+    platformFee: 0,
     deliveryFee: 0,
-    promotionDiscount: 7600,
-    netSales: 349600,
+    promotionDiscount: 0,
+    menuItems: "해물파전 1, 막걸리 2",
+    customerNote: "배달 지연으로 취소",
   },
 }
 
 function getPlatformColor(platform: string): string {
   switch (platform) {
-    case "배민1":
     case "배달의민족":
       return "bg-[#2AC1BC]"
     case "쿠팡이츠":
@@ -170,6 +248,14 @@ function getStatusConfig(status: string) {
         icon: AlertCircle,
         message: "정산이 보류되었습니다. 플랫폼에 문의해주세요."
       }
+    case "취소":
+      return {
+        bgColor: "bg-destructive-light",
+        textColor: "text-destructive",
+        borderColor: "border-destructive/20",
+        icon: XCircle,
+        message: "주문이 취소되었습니다."
+      }
     default:
       return {
         bgColor: "bg-muted",
@@ -198,6 +284,7 @@ export default function DeliverySalesDetailPage() {
   const data = sampleData[id] || sampleData["1"]
   const statusConfig = getStatusConfig(data.status)
   const StatusIcon = statusConfig.icon
+  const isCancelled = data.status === "취소"
 
   return (
     <div className="min-h-screen bg-background">
@@ -227,61 +314,83 @@ export default function DeliverySalesDetailPage() {
           </div>
         </div>
 
-        {/* Sales Summary Card */}
-        <Card className="bg-primary-light border-primary/20">
+        {/* Amount Summary Card */}
+        <Card className={isCancelled ? "bg-destructive-light border-destructive/20" : "bg-primary-light border-primary/20"}>
           <CardContent className="p-4">
-            <p className="text-xs text-primary/70 mb-1">총 배달매출</p>
-            <p className="text-2xl font-bold text-primary">{data.totalSales.toLocaleString()}원</p>
-            <div className="mt-2 pt-2 border-t border-primary/20">
-              <p className="text-xs text-primary/70">정산예정액</p>
-              <p className="text-lg font-semibold text-primary">{data.expectedSettlement.toLocaleString()}원</p>
+            <p className={`text-xs ${isCancelled ? "text-destructive/70" : "text-primary/70"} mb-1`}>주문금액</p>
+            <p className={`text-2xl font-bold ${isCancelled ? "text-destructive line-through" : "text-primary"}`}>
+              {data.orderAmount.toLocaleString()}원
+            </p>
+            {isCancelled ? (
+              <div className="mt-2 pt-2 border-t border-destructive/20">
+                <p className="text-xs text-destructive/70">취소금액</p>
+                <p className="text-lg font-semibold text-destructive">{data.cancelAmount.toLocaleString()}원</p>
+              </div>
+            ) : (
+              <div className="mt-2 pt-2 border-t border-primary/20">
+                <p className="text-xs text-primary/70">정산예정액</p>
+                <p className="text-lg font-semibold text-primary">{data.expectedSettlement.toLocaleString()}원</p>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Order Info */}
+        <Card>
+          <CardContent className="p-4">
+            <h3 className="text-sm font-semibold text-foreground mb-2">주문 정보</h3>
+            <div className="divide-y divide-border">
+              <InfoRow label="주문번호" value={data.orderNumber} />
+              <InfoRow label="주문일시" value={data.orderDateTime} />
+              <InfoRow label="플랫폼" value={data.platform} />
+              <InfoRow label="주문내역" value={data.menuItems} />
+              {data.customerNote && (
+                <InfoRow label="고객요청" value={data.customerNote} />
+              )}
             </div>
           </CardContent>
         </Card>
 
-        {/* Basic Info */}
+        {/* Merchant Info */}
         <Card>
           <CardContent className="p-4">
-            <h3 className="text-sm font-semibold text-foreground mb-2">기본 정보</h3>
+            <h3 className="text-sm font-semibold text-foreground mb-2">가맹점 정보</h3>
             <div className="divide-y divide-border">
-              <InfoRow label="조회 일자" value={data.date} />
-              <InfoRow label="플랫폼" value={data.platform} />
               <InfoRow label="가맹점명" value={data.merchantName} />
               <InfoRow label="사업자등록번호" value={data.businessNumber} />
             </div>
           </CardContent>
         </Card>
 
-        {/* Order Summary */}
-        <Card>
-          <CardContent className="p-4">
-            <h3 className="text-sm font-semibold text-foreground mb-2">주문 정보</h3>
-            <div className="divide-y divide-border">
-              <InfoRow label="주문 건수" value={`${data.orderCount}건`} />
-              <InfoRow 
-                label="취소 건수" 
-                value={`${data.cancelCount}건`} 
-                valueClass={data.cancelCount > 0 ? "text-destructive" : ""} 
-              />
-              <InfoRow label="실 주문 건수" value={`${data.orderCount - data.cancelCount}건`} valueClass="text-primary font-semibold" />
-            </div>
-          </CardContent>
-        </Card>
-
         {/* Settlement Details */}
-        <Card>
-          <CardContent className="p-4">
-            <h3 className="text-sm font-semibold text-foreground mb-2">정산 내역</h3>
-            <div className="divide-y divide-border">
-              <InfoRow label="총 매출" value={`${data.totalSales.toLocaleString()}원`} />
-              <InfoRow label="플랫폼 수수료" value={`-${data.platformFee.toLocaleString()}원`} valueClass="text-destructive" />
-              <InfoRow label="프로모션 할인" value={`-${data.promotionDiscount.toLocaleString()}원`} valueClass="text-destructive" />
-              <InfoRow label="배달비 (가맹점 부담)" value={`${data.deliveryFee.toLocaleString()}원`} />
-              <InfoRow label="정산예정액" value={`${data.netSales.toLocaleString()}원`} valueClass="text-primary font-semibold" />
-              <InfoRow label="정산 예정일" value={data.settlementDate} />
-            </div>
-          </CardContent>
-        </Card>
+        {!isCancelled && (
+          <Card>
+            <CardContent className="p-4">
+              <h3 className="text-sm font-semibold text-foreground mb-2">정산 내역</h3>
+              <div className="divide-y divide-border">
+                <InfoRow label="주문금액" value={`${data.orderAmount.toLocaleString()}원`} />
+                <InfoRow label="플랫폼 수수료" value={`-${data.platformFee.toLocaleString()}원`} valueClass="text-destructive" />
+                <InfoRow label="프로모션 할인" value={`-${data.promotionDiscount.toLocaleString()}원`} valueClass="text-destructive" />
+                <InfoRow label="배달비 (가맹점 부담)" value={`${data.deliveryFee.toLocaleString()}원`} />
+                <InfoRow label="정산예정액" value={`${data.expectedSettlement.toLocaleString()}원`} valueClass="text-primary font-semibold" />
+                <InfoRow label="정산 예정일" value={data.settlementDate} />
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Cancel Info for cancelled orders */}
+        {isCancelled && (
+          <Card>
+            <CardContent className="p-4">
+              <h3 className="text-sm font-semibold text-foreground mb-2">취소 정보</h3>
+              <div className="divide-y divide-border">
+                <InfoRow label="취소금액" value={`${data.cancelAmount.toLocaleString()}원`} valueClass="text-destructive" />
+                <InfoRow label="비고" value={data.customerNote || "취소 처리됨"} />
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Action Buttons */}
         <div className="flex gap-3 pt-2">
