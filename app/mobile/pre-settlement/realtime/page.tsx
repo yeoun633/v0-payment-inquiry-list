@@ -1,52 +1,91 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect, useMemo } from "react"
 import Link from "next/link"
-import { ArrowLeft, AlertCircle, Clock, Wallet, CheckCircle2 } from "lucide-react"
+import { useRouter } from "next/navigation"
+import { ArrowLeft, AlertCircle, Clock, Wallet, CheckCircle2, UtensilsCrossed, ChevronDown, ChevronUp } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
+
+interface SelectedItem {
+  id: string
+  platform: string
+  orderNumber: string
+  orderDateTime: string
+  orderAmount: number
+  expectedSettlement: number
+}
+
+function getPlatformColor(platform: string): string {
+  switch (platform) {
+    case "배달의민족":
+      return "bg-[#2AC1BC]"
+    case "쿠팡이츠":
+      return "bg-[#E94E4E]"
+    case "요기요":
+      return "bg-[#FA0050]"
+    case "땡겨요":
+      return "bg-[#FF6B00]"
+    default:
+      return "bg-muted-foreground"
+  }
+}
 
 export default function RealtimePreSettlementPage() {
-  const [requestAmount, setRequestAmount] = useState("")
+  const router = useRouter()
+  const [selectedItems, setSelectedItems] = useState<SelectedItem[]>([])
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSubmitted, setIsSubmitted] = useState(false)
+  const [showItemList, setShowItemList] = useState(false)
 
-  // Mock data
-  const availableAmount = 2850000
-  const feeRate = 0.025 // 2.5%
+  // Mock bank account data
   const bankAccount = {
     bank: "신한은행",
     number: "110-***-***890",
     holder: "행복한식당",
   }
   const availableHours = "평일 09:00 ~ 17:00"
+  const feeRate = 0.025 // 2.5%
 
-  const numericAmount = parseInt(requestAmount.replace(/,/g, "")) || 0
-  const estimatedFee = Math.round(numericAmount * feeRate)
-  const estimatedReceive = numericAmount - estimatedFee
-
-  const handleAmountChange = (value: string) => {
-    const numeric = value.replace(/[^0-9]/g, "")
-    if (numeric) {
-      setRequestAmount(parseInt(numeric).toLocaleString())
+  useEffect(() => {
+    const stored = sessionStorage.getItem("preSettlementSelectedItems")
+    if (stored) {
+      try {
+        setSelectedItems(JSON.parse(stored))
+      } catch {
+        router.replace("/mobile/delivery-sales")
+      }
     } else {
-      setRequestAmount("")
+      router.replace("/mobile/delivery-sales")
     }
-  }
+  }, [router])
 
-  const handleQuickAmount = (amount: number) => {
-    setRequestAmount(amount.toLocaleString())
-  }
+  const summary = useMemo(() => {
+    const count = selectedItems.length
+    const totalOrderAmount = selectedItems.reduce((sum, r) => sum + r.orderAmount, 0)
+    const totalSettlement = selectedItems.reduce((sum, r) => sum + r.expectedSettlement, 0)
+    const estimatedFee = Math.round(totalSettlement * feeRate)
+    const estimatedReceive = totalSettlement - estimatedFee
+    return { count, totalOrderAmount, totalSettlement, estimatedFee, estimatedReceive }
+  }, [selectedItems])
 
   const handleSubmit = () => {
-    if (numericAmount < 100000 || numericAmount > availableAmount) return
     setIsSubmitting(true)
     setTimeout(() => {
       setIsSubmitting(false)
       setIsSubmitted(true)
+      // Clear sessionStorage after successful submission
+      sessionStorage.removeItem("preSettlementSelectedIds")
+      sessionStorage.removeItem("preSettlementSelectedItems")
     }, 1500)
+  }
+
+  if (selectedItems.length === 0 && !isSubmitted) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <p className="text-muted-foreground">로딩 중...</p>
+      </div>
+    )
   }
 
   if (isSubmitted) {
@@ -67,23 +106,27 @@ export default function RealtimePreSettlementPage() {
           </div>
           <h2 className="text-xl font-bold text-foreground mb-2">실시간 선정산 신청 완료</h2>
           <p className="text-muted-foreground text-center mb-6">
-            신청이 완료되었습니다.<br />
+            {summary.count}건에 대한 선정산 신청이 완료되었습니다.<br />
             약 10분 이내에 입금될 예정입니다.
           </p>
           
           <Card className="w-full mb-6">
             <CardContent className="p-4 space-y-3">
               <div className="flex justify-between">
-                <span className="text-muted-foreground">신청 금액</span>
-                <span className="font-semibold">{numericAmount.toLocaleString()}원</span>
+                <span className="text-muted-foreground">신청 대상</span>
+                <span className="font-semibold">{summary.count}건</span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">수수료</span>
-                <span className="text-destructive">-{estimatedFee.toLocaleString()}원</span>
+                <span className="text-muted-foreground">선정산 금액</span>
+                <span className="font-semibold">{summary.totalSettlement.toLocaleString()}원</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-muted-foreground">수수료 (2.5%)</span>
+                <span className="text-destructive">-{summary.estimatedFee.toLocaleString()}원</span>
               </div>
               <div className="border-t pt-3 flex justify-between">
                 <span className="font-medium">실수령액</span>
-                <span className="font-bold text-primary">{estimatedReceive.toLocaleString()}원</span>
+                <span className="font-bold text-primary">{summary.estimatedReceive.toLocaleString()}원</span>
               </div>
             </CardContent>
           </Card>
@@ -92,8 +135,8 @@ export default function RealtimePreSettlementPage() {
             <Link href="/mobile/pre-settlement/history" className="block">
               <Button variant="outline" className="w-full">신청 내역 보기</Button>
             </Link>
-            <Link href="/mobile/pre-settlement" className="block">
-              <Button className="w-full">선정산 홈으로</Button>
+            <Link href="/mobile/delivery-sales" className="block">
+              <Button className="w-full">배달매출 조회로</Button>
             </Link>
           </div>
         </div>
@@ -106,7 +149,7 @@ export default function RealtimePreSettlementPage() {
       {/* Header */}
       <header className="sticky top-0 z-10 bg-primary text-primary-foreground">
         <div className="flex items-center h-14 px-4">
-          <Link href="/mobile/pre-settlement" className="p-2 -ml-2 hover:bg-primary-foreground/10 rounded-full">
+          <Link href="/mobile/pre-settlement/apply" className="p-2 -ml-2 hover:bg-primary-foreground/10 rounded-full">
             <ArrowLeft className="h-5 w-5" />
           </Link>
           <h1 className="flex-1 text-center text-lg font-semibold pr-7">실시간 선정산</h1>
@@ -114,70 +157,75 @@ export default function RealtimePreSettlementPage() {
       </header>
 
       <div className="p-4 space-y-4">
-        {/* Available Amount */}
+        {/* Application Summary */}
         <Card className="bg-primary text-primary-foreground border-0">
-          <CardContent className="p-4">
-            <p className="text-sm text-primary-foreground/80 mb-1">신청 가능 금액</p>
-            <p className="text-2xl font-bold">{availableAmount.toLocaleString()}원</p>
-          </CardContent>
-        </Card>
-
-        {/* Amount Input */}
-        <Card>
-          <CardHeader className="pb-2">
-            <CardTitle className="text-base">신청 금액 입력</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <Label htmlFor="amount" className="sr-only">금액</Label>
-              <div className="relative">
-                <Input
-                  id="amount"
-                  type="text"
-                  inputMode="numeric"
-                  placeholder="0"
-                  value={requestAmount}
-                  onChange={(e) => handleAmountChange(e.target.value)}
-                  className="text-right text-xl font-semibold pr-8 h-14"
-                />
-                <span className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground">원</span>
-              </div>
-              <p className="text-xs text-muted-foreground mt-2">최소 100,000원 ~ 최대 {availableAmount.toLocaleString()}원</p>
+          <CardContent className="p-5">
+            <div className="flex justify-between items-start mb-2">
+              <p className="text-sm text-primary-foreground/80">신청 대상</p>
+              <p className="text-sm font-medium">{summary.count}건</p>
             </div>
-
-            {/* Quick Amount Buttons */}
-            <div className="grid grid-cols-4 gap-2">
-              {[100000, 500000, 1000000, availableAmount].map((amount) => (
-                <Button
-                  key={amount}
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleQuickAmount(amount)}
-                  className="text-xs"
-                >
-                  {amount === availableAmount ? "전액" : `${(amount / 10000).toLocaleString()}만`}
-                </Button>
-              ))}
-            </div>
+            <p className="text-3xl font-bold">{summary.totalSettlement.toLocaleString()}원</p>
+            <p className="text-xs text-primary-foreground/60 mt-2">
+              총 주문금액 {summary.totalOrderAmount.toLocaleString()}원
+            </p>
           </CardContent>
         </Card>
 
         {/* Fee Calculation */}
-        {numericAmount > 0 && (
-          <Card>
-            <CardContent className="p-4 space-y-3">
-              <div className="flex justify-between text-sm">
-                <span className="text-muted-foreground">예상 수수료 (2.5%)</span>
-                <span className="text-destructive">-{estimatedFee.toLocaleString()}원</span>
-              </div>
-              <div className="border-t pt-3 flex justify-between">
-                <span className="font-medium">실수령 예상 금액</span>
-                <span className="font-bold text-primary text-lg">{estimatedReceive.toLocaleString()}원</span>
-              </div>
+        <Card>
+          <CardHeader className="pb-2">
+            <CardTitle className="text-sm font-medium">정산 내역</CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">신청 가능 금액</span>
+              <span className="font-medium">{summary.totalSettlement.toLocaleString()}원</span>
+            </div>
+            <div className="flex justify-between text-sm">
+              <span className="text-muted-foreground">예상 수수료 (2.5%)</span>
+              <span className="text-destructive">-{summary.estimatedFee.toLocaleString()}원</span>
+            </div>
+            <div className="border-t pt-3 flex justify-between">
+              <span className="font-medium">실수령 예상 금액</span>
+              <span className="font-bold text-primary text-lg">{summary.estimatedReceive.toLocaleString()}원</span>
+            </div>
+          </CardContent>
+        </Card>
+
+        {/* Selected Items Collapsible */}
+        <Card>
+          <CardHeader className="pb-0">
+            <button
+              onClick={() => setShowItemList(!showItemList)}
+              className="flex items-center justify-between w-full"
+            >
+              <CardTitle className="text-sm font-medium">신청 대상 내역 ({summary.count}건)</CardTitle>
+              {showItemList ? (
+                <ChevronUp className="h-4 w-4 text-muted-foreground" />
+              ) : (
+                <ChevronDown className="h-4 w-4 text-muted-foreground" />
+              )}
+            </button>
+          </CardHeader>
+          {showItemList && (
+            <CardContent className="pt-3 space-y-2 max-h-60 overflow-y-auto">
+              {selectedItems.map((item) => (
+                <div 
+                  key={item.id} 
+                  className="flex items-center gap-3 p-2 bg-muted/50 rounded-lg"
+                >
+                  <div className={`h-6 w-6 rounded-full ${getPlatformColor(item.platform)} flex items-center justify-center shrink-0`}>
+                    <UtensilsCrossed className="h-3 w-3 text-white" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-medium truncate">{item.orderNumber}</p>
+                  </div>
+                  <p className="text-xs font-semibold shrink-0">{item.expectedSettlement.toLocaleString()}원</p>
+                </div>
+              ))}
             </CardContent>
-          </Card>
-        )}
+          )}
+        </Card>
 
         {/* Bank Account */}
         <Card>
@@ -216,9 +264,9 @@ export default function RealtimePreSettlementPage() {
                 <p className="font-medium text-warning-foreground mb-2">유의사항</p>
                 <ul className="text-xs text-warning-foreground/80 space-y-1">
                   <li>• 신청 후 취소가 불가합니다.</li>
-                  <li>• 수수료는 신청 금액에서 차감 후 입금됩니다.</li>
+                  <li>• 선택하신 {summary.count}건에 대해 선정산이 적용됩니다.</li>
+                  <li>• 수수료는 정산예정액에서 차감 후 입금됩니다.</li>
                   <li>• 입금은 신청 후 약 10분 이내 처리됩니다.</li>
-                  <li>• 은행 점검 시간에는 지연될 수 있습니다.</li>
                 </ul>
               </div>
             </div>
@@ -229,7 +277,7 @@ export default function RealtimePreSettlementPage() {
         <div className="pt-2 pb-4">
           <Button
             className="w-full h-14 text-lg font-semibold"
-            disabled={numericAmount < 100000 || numericAmount > availableAmount || isSubmitting}
+            disabled={isSubmitting}
             onClick={handleSubmit}
           >
             {isSubmitting ? "신청 중..." : "실시간 선정산 신청하기"}
