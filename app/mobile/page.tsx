@@ -1,7 +1,7 @@
 "use client"
 
 import Link from "next/link"
-import { Bell, ChevronDown, ChevronRight, CreditCard, Building2, Wallet, FileText, TrendingUp, TrendingDown } from "lucide-react"
+import { Bell, ChevronDown, ChevronRight, CreditCard, Building2, Wallet, FileText, TrendingUp, TrendingDown, UtensilsCrossed } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 
@@ -9,7 +9,8 @@ const quickMenus = [
   { icon: CreditCard, label: "승인내역", href: "/mobile/inquiry/approval", color: "bg-primary" },
   { icon: Wallet, label: "매입내역", href: "/mobile/inquiry/purchase", color: "bg-info" },
   { icon: TrendingUp, label: "입금내역", href: "/mobile/inquiry/deposit", color: "bg-success" },
-  { icon: Building2, label: "가맹점 정보", href: "/mobile/inquiry/merchant", color: "bg-warning" },
+  { icon: UtensilsCrossed, label: "배달매출", href: "/mobile/delivery-sales", color: "bg-warning" },
+  { icon: Building2, label: "가맹점 정보", href: "/mobile/inquiry/merchant", color: "bg-muted-foreground" },
 ]
 
 const recentTransactions = [
@@ -69,7 +70,7 @@ export default function MobileHomePage() {
       {/* Quick Menu Grid */}
       <div className="px-4 py-6">
         <h2 className="text-sm font-semibold text-muted-foreground mb-3">빠른 조회</h2>
-        <div className="grid grid-cols-4 gap-3">
+        <div className="grid grid-cols-5 gap-2">
           {quickMenus.map((menu) => {
             const Icon = menu.icon
             return (
